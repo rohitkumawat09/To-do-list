@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To do list</title>
+</head>
+<link rel="stylesheet" href="newtodo_list.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<body>
+    
+<div id="main">
+
+    <h1>To do list</h1>
+    <form action="">
+        <input type="text" placeholder="Enter the value" id="name">
+        <button type="button" id="add">Add</button>
+    </form>
+
+    <ul id="todo-list"></ul>
+</div>
+
+<script>   
+    let input = document.getElementById("name");
+    let btn = document.getElementById("add");
+    let heading = document.getElementById("todo-list");
+
+    let arr = [];
+    let task = null;
+
+    btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        next(e);
+        showData();
+    });
+
+    function next(e) {
+        if (task) {
+            
+            arr = arr.map((item) => {
+                return item.id === task ? { ...item, value: input.value } : item;
+            });
+            task = null;
+            btn.innerText = "Add Task";
+        } else {
+           
+            if (input.value.length > 0) {
+                let obj = {
+                    id: Date.now(),
+                    value: input.value,
+                };
+                arr.push(obj);
+            }
+        }
+        input.value = ""; 
+    }
+
+    function showData() {
+        heading.innerHTML = ""; 
+        arr.forEach(element => {
+            let parentbox = document.createElement("div");
+            parentbox.classList = "para";
+            let heading1 = document.createElement("h1");
+            heading1.innerHTML = element.value;
+
+            let childbox = document.createElement("div");
+            childbox.classList = "para2";
+            let btn1 = document.createElement("button");
+            btn1.innerHTML = "remove";
+            let btn2 = document.createElement("button");
+            btn2.innerHTML = "edit";
+
+            childbox.append(btn1, btn2);
+            parentbox.append(heading1, childbox);
+
+            heading.append(parentbox);
+
+            //
+            btn1.addEventListener("click", () => {
+                arr = arr.filter((item) => item.id !== element.id);  
+                showData(); 
+            });
+
+           
+            btn2.addEventListener("click", () => edit(element.id));
+        });
+    }
+
+    function edit(editid) {
+        let taskToEdit = arr.find((task) => task.id === editid);
+        input.value = taskToEdit.value;
+        btn.innerText = "Edit Task";
+        task = editid; 
+    }
+</script>
+
+</body>
+</html>
